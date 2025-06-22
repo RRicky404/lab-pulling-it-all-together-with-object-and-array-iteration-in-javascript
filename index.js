@@ -114,3 +114,109 @@ function gameObject() {
         },
     };
 }
+// Helper: Return all players as an array of objects with name included
+function allPlayers() {
+  const teams = Object.values(gameObject());
+  const playersArray = [];
+
+  for (let i = 0; i < teams.length; i++) {
+    const team = teams[i];
+    const players = team.players;
+
+    for (let name in players) {
+      const stats = players[name];
+      const playerWithName = {
+        name: name,
+        number: stats.number,
+        shoe: stats.shoe,
+        points: stats.points,
+        rebounds: stats.rebounds,
+        assists: stats.assists,
+        steals: stats.steals,
+        blocks: stats.blocks,
+        slamDunks: stats.slamDunks
+      };
+      playersArray.push(playerWithName);
+    }
+  }
+
+  return playersArray;
+}
+
+// 1. Return number of points scored by a player
+function numPointsScored(playerName) {
+  const player = allPlayers().find(p => p.name === playerName);
+  return player ? player.points : 0;
+}
+
+// 2. Return shoe size of a player
+function shoeSize(playerName) {
+  const player = allPlayers().find(p => p.name === playerName);
+  return player ? player.shoe : 0;
+}
+
+// 3. Return player stats (excluding name)
+function playerStats(playerName) {
+  const player = allPlayers().find(function(p) {
+    return p.name === playerName;
+  });
+
+  if (!player) return {};
+
+  const stats = {};
+  for (let key in player) {
+    if (key !== 'name') {
+      stats[key] = player[key];
+    }
+  }
+
+  return stats;
+}
+
+// 4. Return number of rebounds for player with biggest shoe
+function bigShoeRebounds() {
+  const biggest = allPlayers().reduce((max, player) => {
+    return player.shoe > max.shoe ? player : max;
+  }, allPlayers()[0]);
+
+  return biggest.rebounds;
+}
+
+// 5. Return team colors
+function teamColors(teamName) {
+  for (let key in gameObject()) {
+    if (gameObject()[key].teamName === teamName) {
+      return gameObject()[key].colors;
+    }
+  }
+  return [];
+}
+
+// 6. Return team names
+function teamNames() {
+  return Object.values(gameObject()).map(team => team.teamName);
+}
+
+// 7. Return player numbers of a team
+function playerNumbers(teamName) {
+  for (let key in gameObject()) {
+    if (gameObject()[key].teamName === teamName) {
+      return Object.values(gameObject()[key].players).map(player => player.number);
+    }
+  }
+  return [];
+}
+
+module.exports = {
+  numPointsScored,
+  shoeSize,
+  teamColors,
+  teamNames,
+  playerNumbers,
+  playerStats,
+  bigShoeRebounds,
+  mostPointsScored,
+  winningTeam,
+  playerWithLongestName,
+  doesLongNameStealATon,
+};
